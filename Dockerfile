@@ -5,5 +5,4 @@ RUN CGO_ENABLED=0 go build -o /ssr-client
 
 FROM scratch
 COPY --from=builder /ssr-client /ssr-client
-EXPOSE 8080
 ENTRYPOINT [ "/ssr-client" ]
