@@ -25,5 +25,10 @@ ssr-client [OPTIONS] address
 
 ## Example
 ```
-./ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -l 1090 -k 1234 -m aes-256-cfb --dns=8.8.4.4:53
+./ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -l 1080 -k 1234 -m aes-256-cfb --dns=8.8.4.4:53
+```
+
+Docker:
+```
+docker run --name ssr --restart always -d -p 1080:1080 doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -l 1080 -k 1234 -m aes-256-cfb --dns=8.8.4.4:53
 ```
