@@ -22,8 +22,6 @@ jobs:
       
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-        with:
-          platforms: all
 
       - name: Set up Docker Buildx
         id: buildx
@@ -41,15 +39,9 @@ jobs:
         with:
           context: ./
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/ssr-client:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-
-      - name: Docker manifest
-        run: /usr/bin/docker manifest inspect doorbash/ssr-client
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
