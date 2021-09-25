@@ -48,7 +48,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Docker manifest
-        run: docker manifest inspect !$
+        run: /usr/bin/docker manifest inspect !$
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
