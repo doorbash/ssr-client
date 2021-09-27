@@ -11,15 +11,28 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
-
-      - name: Generate build files
-        uses: thatisuday/go-build-action@v1
+        
+      - name: Setup go
+        uses: actions/setup-go@v2
         with:
-          platforms: "linux/amd64, darwin/amd64, windows/386, windows/amd64, linux/arm, linux/arm64, linux/mips, linux/mips64, linux/mips64le, linux/mipsle"
-          name: "ssr-client"
-          compress: "false"
-          dest: "dist"
-
+          go-version: 1.17
+          
+      - name: Print go tool dist list
+        run: go tool dist list
+        
+      # linux/amd64, darwin/amd64, windows/386, windows/amd64, linux/arm, linux/arm64, linux/mips, linux/mips64, linux/mips64le, linux/mipsle
+        
+      - name: Build
+        run: |
+          go tool dist list | while read x; do
+            GOOS=${x%%/*}
+            GOARCH=${x##*/}
+            filename=${{ github.event.release.repository.name }}-$GOOS-$GOARCH
+            if [ "$GOOS" == "windows" ]; then
+              filename+=".exe"
+            fi
+            go build -o dist/$filename
+          done
       - name: Upload build-artifacts
         uses: skx/github-action-publish-binaries@master
         env:
