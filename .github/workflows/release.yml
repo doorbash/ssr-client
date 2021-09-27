@@ -22,8 +22,8 @@ jobs:
 
       - name: Build
         run: |
-          platforms=("linux/amd64", "darwin/amd64", "windows/amd64")
-          for x in ${platforms[@]}; do
+          platforms=("linux/amd64" "darwin/amd64" "windows/amd64")
+          for x in $platforms; do
             os=${x%%/*}
             arch=${x##*/}
             filename=${{ github.event.repository.name }}-$os-$arch
