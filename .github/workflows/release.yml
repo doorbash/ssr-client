@@ -30,7 +30,7 @@ jobs:
             if [ "$os" == "windows" ]; then
               filename+=".exe"
             fi
-            GOOS=$os GOARCH=$arch CGO_ENABLED=0 go build -o dist/$filename
+            GOOS=$os GOARCH=$arch CGO_ENABLED=1 go build -o dist/$filename
           done
       - name: Upload build-artifacts
         uses: skx/github-action-publish-binaries@master
