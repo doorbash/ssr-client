@@ -25,13 +25,13 @@ jobs:
       - name: Build
         run: |
           go tool dist list | while read x; do
-            GOOS=${x%%/*}
-            GOARCH=${x##*/}
-            filename=${{ github.event.release.repository.name }}-$GOOS-$GOARCH
-            if [ "$GOOS" == "windows" ]; then
+            os=${x%%/*}
+            arch=${x##*/}
+            filename=${{ github.event.repository.name }}-$os-$arch
+            if [ "$os" == "windows" ]; then
               filename+=".exe"
             fi
-            go build -o dist/$filename
+            GOOS=$os GOARCH=$arch CGO_ENABLED=0 go build -o dist/$filename
           done
       - name: Upload build-artifacts
         uses: skx/github-action-publish-binaries@master
