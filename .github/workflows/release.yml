@@ -15,7 +15,7 @@ jobs:
       - name: Generate build files
         uses: thatisuday/go-build-action@v1
         with:
-          platforms: "linux/386, linux/amd64, darwin/amd64, windows/386, windows/amd64, linux/arm, linux/arm64, linux/mips, linux/mips64, linux/mips64le, linux/mipsle"
+          platforms: "linux/amd64, darwin/amd64, windows/386, windows/amd64, linux/arm, linux/arm64, linux/mips, linux/mips64, linux/mips64le, linux/mipsle"
           name: "ssr-client"
           compress: "false"
           dest: "dist"
