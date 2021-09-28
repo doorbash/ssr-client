@@ -5,7 +5,7 @@ go build
 
 ## Usage:
 ```
-ssr-client [OPTIONS] address
+ssr-client [OPTIONS]
 ```
 
 **Options:**
