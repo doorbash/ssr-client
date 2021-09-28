@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/jessevdk/go-flags"
 )
@@ -17,20 +18,17 @@ type Options struct {
 	ObfsParam     string `long:"op" description:"obfs param" required:"false"`
 	Protocol      string `short:"O" description:"protocol" required:"false" default:"origin"`
 	ProtocolParam string `long:"Op" description:"protocol param" required:"false"`
-
-	Dns string `long:"dns" description:"custom dns" required:"false" default:"8.8.8.8:53"`
+	Dns           string `long:"dns" description:"custom dns" required:"false" default:"8.8.8.8:53"`
 }
 
 func main() {
 	var opts Options
 	parser := flags.NewParser(&opts, flags.Default)
 
-	parser.Usage = "[OPTIONS] address"
-
 	_, err := parser.Parse()
 
 	if err != nil {
-		log.Fatalln(err)
+		os.Exit(1)
 	}
 
 	ssrClient, err := NewSSRClient(
