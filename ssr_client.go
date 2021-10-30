@@ -47,14 +47,14 @@ func NewSSRClient(
 
 	p, _ := outbound.ParseProxy(ssrNode)
 
-	pr, err := NewProxyDialer(p, dns)
+	proxyDialer, err := NewProxyDialer(p, dns)
 
 	if err != nil {
 		return nil, err
 	}
 
 	client.socks5server, _ = socks5.NewSocks5Server(fmt.Sprintf("socks://%s:%d", localAddr, localPort), SSRProxy{
-		dialer: pr,
+		dialer: proxyDialer,
 	})
 
 	return client, nil

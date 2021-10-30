@@ -38,7 +38,11 @@ func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
 		if err != nil {
 			return nil, err
 		}
+		if len(ips)  == 0 {
+			return nil, errors.New(fmt.Sprintf("no address associated with this domain %s",addr))
+		}
 		ip = ips[0]
+		log.Printf("[Resolver] %s -> %s" , addr , ip)
 	}
 
 	metadata := &C.Metadata{
@@ -142,20 +146,20 @@ func NewProxyDialer(p C.Proxy, Dns string) (*ProxyDialer, error) {
 		return nil, errors.New("bad dns port")
 	}
 
-	pd := &ProxyDialer{
+	proxyDialer := &ProxyDialer{
 		proxy: p,
 	}
 
-	pd.resolver = &net.Resolver{
+	proxyDialer.resolver = &net.Resolver{
 		PreferGo: true,
 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-			md := &C.Metadata{
+			metaData := &C.Metadata{
 				NetWork: C.UDP,
 				DstIP:   dnsIp,
 				DstPort: dp,
 			}
 
-			pk, err := pd.proxy.DialUDP(md)
+			packetConn, err := proxyDialer.proxy.DialUDP(metaData)
 
 			if err != nil {
 				fmt.Println(err)
@@ -163,16 +167,16 @@ func NewProxyDialer(p C.Proxy, Dns string) (*ProxyDialer, error) {
 			}
 
 			addr := &net.UDPAddr{
-				IP:   md.DstIP,
+				IP:   metaData.DstIP,
 				Port: dnsPort,
 			}
 
 			return UdpConn{
-				pk,
+				packetConn,
 				addr,
 			}, err
 		},
 	}
 
-	return pd, nil
+	return proxyDialer, nil
 }
