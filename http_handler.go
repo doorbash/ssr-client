@@ -9,8 +9,7 @@ import (
 
 // Borrowed from https://github.com/dworld/http2socks/
 
-
-type HTTP2Socks struct {
+type HttpHandler struct {
 	SocksAddr  string // socks proxy address
 	SocksProto int    // socks proxy protocol type
 }
@@ -23,7 +22,7 @@ func Copy(dst io.Writer, src io.Reader) {
 	}
 }
 
-func (s *HTTP2Socks) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+func (s *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	log.Printf("REQUEST: %s %s", r.Method, r.RequestURI)
 	dialer := socks.DialSocksProxy(s.SocksProto, s.SocksAddr)
 	if r.Method == "CONNECT" {

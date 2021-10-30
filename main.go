@@ -22,7 +22,7 @@ type Options struct {
 	Protocol      string `short:"O" description:"protocol" required:"false" default:"origin"`
 	ProtocolParam string `long:"Op" description:"protocol param" required:"false"`
 	Dns           string `long:"dns" description:"custom dns" required:"false" default:"8.8.8.8:53"`
-	HttpRelay     int 	 `short:"r" description:"http relay port" required:"false" default:"0"`
+	LocalHttpPort int    `short:"r" description:"http relay port" required:"false" default:"0"`
 }
 
 func main() {
@@ -52,12 +52,12 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	if opts.HttpRelay != 0 {
-		h2s := HTTP2Socks{
+	if opts.LocalHttpPort != 0 {
+		httpHandler := HttpHandler{
 			SocksAddr:  fmt.Sprintf("127.0.0.1:%d",opts.LocalPort),
 			SocksProto: socks.SOCKS5,
 		}
-		go http.ListenAndServe(fmt.Sprintf("127.0.0.1:%d",opts.HttpRelay), &h2s)
+		go http.ListenAndServe(fmt.Sprintf("127.0.0.1:%d",opts.LocalHttpPort), &httpHandler)
 	}
 	ssrClient.ListenAndServe()
 }
