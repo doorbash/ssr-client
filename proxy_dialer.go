@@ -42,7 +42,6 @@ func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
 			return nil, errors.New(fmt.Sprintf("no address associated with this domain %s",addr))
 		}
 		ip = ips[0]
-		log.Printf("[Resolver] %s -> %s" , addr , ip)
 	}
 
 	metadata := &C.Metadata{
@@ -151,7 +150,7 @@ func NewProxyDialer(p C.Proxy, Dns string) (*ProxyDialer, error) {
 	}
 
 	proxyDialer.resolver = &net.Resolver{
-		PreferGo: true,
+		PreferGo: false,
 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
 			metaData := &C.Metadata{
 				NetWork: C.UDP,
