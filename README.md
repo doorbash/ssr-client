@@ -21,6 +21,7 @@ ssr-client [OPTIONS]
   -O=         protocol (default: origin)
       --Op=   protocol param
       --dns=  custom dns (default: 8.8.8.8:53)
+  -r=         http relay port (default disabled)
 ```
 
 ## Example

@@ -6,4 +6,5 @@ require (
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/kooroshh/bridge v0.1.6
 	github.com/nadoo/glider v0.14.0
+	h12.io/socks v1.0.3
 )
