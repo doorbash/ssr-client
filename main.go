@@ -54,10 +54,10 @@ func main() {
 	}
 	if opts.LocalHttpPort != 0 {
 		httpHandler := HttpHandler{
-			SocksAddr:  fmt.Sprintf("127.0.0.1:%d",opts.LocalPort),
+			SocksAddr:  fmt.Sprintf("127.0.0.1:%d", opts.LocalPort),
 			SocksProto: socks.SOCKS5,
 		}
-		go http.ListenAndServe(fmt.Sprintf("%s:%d",opts.LocalAddr,opts.LocalHttpPort), &httpHandler)
+		go http.ListenAndServe(fmt.Sprintf("%s:%d", opts.LocalAddr, opts.LocalHttpPort), &httpHandler)
 	}
 	ssrClient.ListenAndServe()
 }

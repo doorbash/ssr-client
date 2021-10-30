@@ -38,8 +38,8 @@ func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
 		if err != nil {
 			return nil, err
 		}
-		if len(ips)  == 0 {
-			return nil, errors.New(fmt.Sprintf("no address associated with this domain %s",addr))
+		if len(ips) == 0 {
+			return nil, errors.New(fmt.Sprintf("no address associated with this domain %s", addr))
 		}
 		ip = ips[0]
 	}
