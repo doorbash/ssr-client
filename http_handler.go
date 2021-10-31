@@ -1,6 +1,7 @@
 package main
 
 import (
+	"compress/gzip"
 	"h12.io/socks"
 	"io"
 	"log"
@@ -72,7 +73,15 @@ func (s *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	_, err = io.Copy(rw, resp.Body)
+	var reader io.ReadCloser
+	switch resp.Header.Get("Content-Encoding") {
+	case "gzip":
+		reader, err = gzip.NewReader(resp.Body)
+		defer reader.Close()
+	default:
+		reader = resp.Body
+	}
+	_, err = io.Copy(rw, reader)
 	if err != nil {
 		log.Printf("write response: %s", err)
 		return
