@@ -38,6 +38,9 @@ func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
 		if err != nil {
 			return nil, err
 		}
+		if len(ips) == 0 {
+			return nil, fmt.Errorf("no address associated with this domain %s", addr)
+		}
 		ip = ips[0]
 	}
 
@@ -85,6 +88,9 @@ func (p *ProxyDialer) DialUDP(network, addr string) (pc net.PacketConn, writeTo 
 		ips, err := p.resolver.LookupIP(ctx, "ip", address)
 		if err != nil {
 			return nil, nil, err
+		}
+		if len(ips) == 0 {
+			return nil, nil, fmt.Errorf("no address associated with this domain %s", addr)
 		}
 		ip = ips[0]
 	}
@@ -170,7 +176,7 @@ func NewProxyDialer(p C.Proxy, Dns string) (*ProxyDialer, error) {
 			return UdpConn{
 				pk,
 				addr,
-			}, err
+			}, nil
 		},
 	}
 

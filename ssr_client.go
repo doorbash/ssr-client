@@ -9,10 +9,12 @@ import (
 )
 
 type SSRClient struct {
+	httpServer   *HttpHandler
 	socks5server proxy.Server
 }
 
 func (s *SSRClient) ListenAndServe() {
+	go s.httpServer.ListenAndServe()
 	s.socks5server.ListenAndServe()
 }
 
@@ -20,7 +22,8 @@ func NewSSRClient(
 	serverAddr string,
 	serverPort int,
 	localAddr string,
-	localPort int,
+	localSocksPort int,
+	localHttpPort int,
 	password string,
 	method string,
 	obfs string,
@@ -53,9 +56,13 @@ func NewSSRClient(
 		return nil, err
 	}
 
-	client.socks5server, _ = socks5.NewSocks5Server(fmt.Sprintf("socks://%s:%d", localAddr, localPort), SSRProxy{
+	ssrProxy := &SSRProxy{
 		dialer: pr,
-	})
+	}
+
+	client.socks5server, _ = socks5.NewSocks5Server(fmt.Sprintf("socks://%s:%d", localAddr, localSocksPort), ssrProxy)
+
+	client.httpServer = NewHttpHandler(fmt.Sprintf("%s:%d", localAddr, localHttpPort), ssrProxy)
 
 	return client, nil
 }
