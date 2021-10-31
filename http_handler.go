@@ -1,7 +1,6 @@
 package main
 
 import (
-	"compress/gzip"
 	"h12.io/socks"
 	"io"
 	"log"
@@ -23,10 +22,17 @@ func Copy(dst io.Writer, src io.Reader) {
 	}
 }
 
-func (s *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	log.Printf("REQUEST: %s %s", r.Method, r.RequestURI)
+func copyHeader(dst, src http.Header) {
+	for headerKey, headerValue := range src {
+		for _, headerSegment := range headerValue {
+			dst.Add(headerKey, headerSegment)
+		}
+	}
+}
+func (s *HttpHandler) ServeHTTP(rw http.ResponseWriter, request *http.Request) {
+	log.Printf("REQUEST: %s %s", request.Method, request.RequestURI)
 	dialer := socks.DialSocksProxy(s.SocksProto, s.SocksAddr)
-	if r.Method == "CONNECT" {
+	if request.Method == "CONNECT" {
 		hj, ok := rw.(http.Hijacker)
 		if !ok {
 			log.Printf("can't cast to Hijacker")
@@ -47,9 +53,9 @@ func (s *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			log.Printf("flush error, %s", err)
 			return
 		}
-		outconn, err := dialer("tcp", r.Host)
+		outconn, err := dialer("tcp", request.Host)
 		if err != nil {
-			log.Printf("dial to %s error, %s", r.Host, err)
+			log.Printf("dial to %s error, %s", request.Host, err)
 			return
 		}
 		go Copy(conn, outconn)
@@ -57,7 +63,8 @@ func (s *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tr := &http.Transport{
-		Dial: dialer,
+		Dial:               dialer,
+		DisableCompression: true,
 	}
 	client := &http.Client{
 		Transport: tr,
@@ -65,25 +72,17 @@ func (s *HttpHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			return nil
 		},
 	}
-	outreq := *r
+
+	outreq := *request
 	outreq.RequestURI = ""
+	copyHeader(outreq.Header, request.Header)
 	resp, err := client.Do(&outreq)
 	if err != nil {
 		log.Printf("request socks: %s", err)
 		return
 	}
-	defer resp.Body.Close()
-	var reader io.ReadCloser
-	switch resp.Header.Get("Content-Encoding") {
-	case "gzip":
-		reader, err = gzip.NewReader(resp.Body)
-		defer reader.Close()
-	default:
-		reader = resp.Body
-	}
-	_, err = io.Copy(rw, reader)
-	if err != nil {
-		log.Printf("write response: %s", err)
-		return
-	}
+	copyHeader(rw.Header(), resp.Header)
+	rw.WriteHeader(resp.StatusCode)
+	io.Copy(rw, resp.Body)
+
 }
