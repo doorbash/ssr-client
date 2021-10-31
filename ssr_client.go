@@ -16,7 +16,7 @@ func (s *SSRClient) ListenAndServe() {
 	s.socks5server.ListenAndServe()
 }
 
-func NewSSRClient(
+func NewClient(
 	serverAddr string,
 	serverPort int,
 	localAddr string,
@@ -28,12 +28,13 @@ func NewSSRClient(
 	protocol string,
 	protocolParam string,
 	dns string,
+	proxyType string,
 ) (*SSRClient, error) {
 	client := &SSRClient{}
 
 	ssrNode := map[string]interface{}{
-		"name":           "ssr",
-		"type":           "ssr",
+		"name":           fmt.Sprintf("%s:%d",serverAddr,serverPort),
+		"type":           proxyType,
 		"server":         serverAddr,
 		"port":           serverPort,
 		"password":       password,

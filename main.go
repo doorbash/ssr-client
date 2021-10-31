@@ -23,6 +23,7 @@ type Options struct {
 	ProtocolParam string `long:"Op" description:"protocol param" required:"false"`
 	Dns           string `long:"dns" description:"custom dns" required:"false" default:"8.8.8.8:53"`
 	LocalHttpPort int    `short:"r" description:"http relay port" required:"false" default:"0"`
+	ProxyType 	  string `short:"t" description:"proxy type (ssr / ss)" required:"false" default:"ssr"`
 }
 
 func main() {
@@ -35,7 +36,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	ssrClient, err := NewSSRClient(
+	ssrClient, err := NewClient(
 		opts.ServerAddr,
 		opts.ServerPort,
 		opts.LocalAddr,
@@ -47,6 +48,7 @@ func main() {
 		opts.Protocol,
 		opts.ProtocolParam,
 		opts.Dns,
+		opts.ProxyType,
 	)
 
 	if err != nil {
