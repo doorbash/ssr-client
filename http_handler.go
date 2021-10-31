@@ -17,16 +17,16 @@ func copyHeader(dst, src http.Header) {
 	}
 }
 
-type HttpHandler struct {
-	addr  string
-	proxy proxy.Proxy
-}
-
 func copy(dst io.Writer, src io.Reader) {
 	_, err := io.Copy(dst, src)
 	if err != nil {
 		log.Printf("http_handler: copy connection error, %s", err)
 	}
+}
+
+type HttpHandler struct {
+	addr  string
+	proxy proxy.Proxy
 }
 
 func (s *HttpHandler) dial(network, addr string) (net.Conn, error) {
