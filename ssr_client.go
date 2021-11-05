@@ -12,6 +12,7 @@ import (
 type SSRClient struct {
 	httpServer   proxy.Server
 	socks5server proxy.Server
+	dnsCache     *DNSCache
 }
 
 func (s *SSRClient) ListenAndServe() {
@@ -33,7 +34,11 @@ func NewSSRClient(
 	protocolParam string,
 	dns string,
 ) (*SSRClient, error) {
-	client := &SSRClient{}
+	dnsCache := NewDNSCache()
+
+	client := &SSRClient{
+		dnsCache: dnsCache,
+	}
 
 	ssrNode := map[string]interface{}{
 		"name":           "ssr",
@@ -51,7 +56,7 @@ func NewSSRClient(
 
 	p, _ := outbound.ParseProxy(ssrNode)
 
-	pr, err := NewProxyDialer(p, dns)
+	pr, err := NewProxyDialer(p, dns, dnsCache)
 
 	if err != nil {
 		return nil, err

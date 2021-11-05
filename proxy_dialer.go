@@ -14,8 +14,29 @@ import (
 )
 
 type ProxyDialer struct {
+	dnsCache *DNSCache
 	proxy    C.Proxy
 	resolver *net.Resolver
+}
+
+func (p *ProxyDialer) resolve(address string) (net.IP, error) {
+	ips, err := p.dnsCache.Get(address)
+	if err != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		ips, err := p.resolver.LookupIP(ctx, "ip", address)
+		if err != nil {
+			return nil, err
+		}
+		if len(ips) == 0 {
+			return nil, fmt.Errorf("no address associated with this domain %s", address)
+		}
+		p.dnsCache.Put(address, ips)
+		return ips[0], nil
+	}
+	ip := ips[0]
+	log.Printf("Cache: %s is available in cache : %s\n", address, ip.String())
+	return ip, nil
 }
 
 func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
@@ -32,16 +53,9 @@ func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
 	ip := net.ParseIP(address)
 
 	if ip == nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		ips, err := p.resolver.LookupIP(ctx, "ip", address)
-		if err != nil {
+		if ip, err = p.resolve(address); err != nil {
 			return nil, err
 		}
-		if len(ips) == 0 {
-			return nil, fmt.Errorf("no address associated with this domain %s", addr)
-		}
-		ip = ips[0]
 	}
 
 	metadata := &C.Metadata{
@@ -83,16 +97,9 @@ func (p *ProxyDialer) DialUDP(network, addr string) (pc net.PacketConn, writeTo 
 	ip := net.ParseIP(address)
 
 	if ip == nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		ips, err := p.resolver.LookupIP(ctx, "ip", address)
-		if err != nil {
+		if ip, err = p.resolve(address); err != nil {
 			return nil, nil, err
 		}
-		if len(ips) == 0 {
-			return nil, nil, fmt.Errorf("no address associated with this domain %s", addr)
-		}
-		ip = ips[0]
 	}
 
 	metadata := &C.Metadata{
@@ -130,7 +137,7 @@ func (p *ProxyDialer) Addr() string {
 	return ""
 }
 
-func NewProxyDialer(p C.Proxy, Dns string) (*ProxyDialer, error) {
+func NewProxyDialer(p C.Proxy, Dns string, dnsCache *DNSCache) (*ProxyDialer, error) {
 	c := strings.LastIndex(Dns, ":")
 	if c == -1 {
 		return nil, errors.New("bad dns address")
@@ -149,7 +156,8 @@ func NewProxyDialer(p C.Proxy, Dns string) (*ProxyDialer, error) {
 	}
 
 	pd := &ProxyDialer{
-		proxy: p,
+		proxy:    p,
+		dnsCache: dnsCache,
 	}
 
 	pd.resolver = &net.Resolver{
