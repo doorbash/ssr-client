@@ -5,11 +5,12 @@ import (
 
 	"github.com/kooroshh/bridge/adapter/outbound"
 	"github.com/nadoo/glider/proxy"
+	"github.com/nadoo/glider/proxy/http"
 	"github.com/nadoo/glider/proxy/socks5"
 )
 
 type SSRClient struct {
-	httpServer   *HttpHandler
+	httpServer   proxy.Server
 	socks5server proxy.Server
 }
 
@@ -62,7 +63,7 @@ func NewSSRClient(
 
 	client.socks5server, _ = socks5.NewSocks5Server(fmt.Sprintf("socks://%s:%d", localAddr, localSocksPort), ssrProxy)
 
-	client.httpServer = NewHttpHandler(fmt.Sprintf("%s:%d", localAddr, localHttpPort), ssrProxy)
+	client.httpServer, _ = http.NewHTTPServer(fmt.Sprintf("http://%s:%d", localAddr, localHttpPort), ssrProxy)
 
 	return client, nil
 }
