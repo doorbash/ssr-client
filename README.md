@@ -31,5 +31,5 @@ ssr-client [OPTIONS]
 
 **Docker:**
 ```
-docker run --name ssr --restart always -d -p 1080:1080/tcp -p 1080:1080/udp -p 1081:1081/tcp doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -l 1080 -r 1081 -k 1234 -m aes-256-cfb --dns=8.8.4.4:53
+docker run --name ssr --restart always -d -p 1080:1080/tcp -p 1080:1080/udp -p 1081:1081/tcp doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -k 1234 -m aes-256-cfb --dns=8.8.4.4:53
 ```
