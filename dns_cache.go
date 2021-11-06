@@ -8,61 +8,60 @@ import (
 	"time"
 )
 
-var (
-	ErrNoRecords = errors.New("no records")
-)
+var ErrNoRecords = errors.New("no records")
+
+type DNSRecord struct {
+	ips  []net.IP
+	time time.Time
+}
 
 type DNSCache struct {
 	records map[string]DNSRecord
 	mutex   sync.Mutex
 }
 
-type DNSRecord struct {
-	addresses []net.IP
-	time      time.Time
-}
-
-func (dns *DNSCache) Put(domain string, addresses []net.IP) {
-	if len(addresses) > 0 {
-		dns.mutex.Lock()
-		defer dns.mutex.Unlock()
-		_, contains := dns.records[domain]
-		if contains {
-			return
-		}
-		dns.records[domain] = DNSRecord{
-			addresses: addresses,
-			time:      time.Now(),
-		}
+func (d *DNSCache) Put(domain string, ips []net.IP) {
+	if len(ips) == 0 {
+		return
+	}
+	d.mutex.Lock()
+	defer d.mutex.Unlock()
+	_, ok := d.records[domain]
+	if ok {
+		return
+	}
+	d.records[domain] = DNSRecord{
+		ips:  ips,
+		time: time.Now(),
 	}
 }
 
-func (dns *DNSCache) Get(domain string) ([]net.IP, error) {
-	dns.mutex.Lock()
-	defer dns.mutex.Unlock()
-	_, contains := dns.records[domain]
-	if contains {
-		return dns.records[domain].addresses, nil
+func (d *DNSCache) Get(domain string) ([]net.IP, error) {
+	d.mutex.Lock()
+	defer d.mutex.Unlock()
+	record, ok := d.records[domain]
+	if ok {
+		return record.ips, nil
 	}
 	return nil, ErrNoRecords
 }
 
-func (dns *DNSCache) CleanUp() {
+func (d *DNSCache) cleanUp() {
 	log.Printf("DNSCache: Starting DNS Cache CleanUp")
-	records := 0
+	r := 0
 	for range time.Tick(time.Minute) {
-		dns.mutex.Lock()
-		for k, v := range dns.records {
+		d.mutex.Lock()
+		for k, v := range d.records {
 			if time.Since(v.time).Minutes() > 10 {
-				delete(dns.records, k)
-				records++
+				delete(d.records, k)
+				r++
 			}
 		}
-		dns.mutex.Unlock()
-		if records > 0 {
-			log.Printf("DNSCache: %d dns records has been removed", records)
+		d.mutex.Unlock()
+		if r > 0 {
+			log.Printf("DNSCache: %d dns records has been removed", r)
 		}
-		records = 0
+		r = 0
 	}
 }
 
@@ -70,6 +69,6 @@ func NewDNSCache() *DNSCache {
 	cache := &DNSCache{
 		records: make(map[string]DNSRecord),
 	}
-	go cache.CleanUp()
+	go cache.cleanUp()
 	return cache
 }
