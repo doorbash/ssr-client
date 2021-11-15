@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/kooroshh/bridge/adapter/outbound"
+	"github.com/doorbash/bridge/adapter/outbound"
 	"github.com/nadoo/glider/proxy"
 	"github.com/nadoo/glider/proxy/http"
 	"github.com/nadoo/glider/proxy/socks5"

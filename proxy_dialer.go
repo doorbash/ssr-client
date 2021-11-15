@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	C "github.com/kooroshh/bridge/constant"
+	C "github.com/doorbash/bridge/constant"
 )
 
 type ProxyDialer struct {
