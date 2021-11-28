@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/doorbash/bridge/adapter/outbound"
+	C "github.com/doorbash/bridge/constant"
 	"github.com/nadoo/glider/proxy"
 	"github.com/nadoo/glider/proxy/http"
 	"github.com/nadoo/glider/proxy/socks5"
@@ -12,7 +14,6 @@ import (
 type SSRClient struct {
 	httpServer   proxy.Server
 	socks5server proxy.Server
-	dnsCache     *DNSCache
 }
 
 func (s *SSRClient) ListenAndServe() {
@@ -33,12 +34,9 @@ func NewSSRClient(
 	protocol string,
 	protocolParam string,
 	dns string,
+	forwardProxy string,
 ) (*SSRClient, error) {
-	dnsCache := NewDNSCache()
-
-	client := &SSRClient{
-		dnsCache: dnsCache,
-	}
+	client := &SSRClient{}
 
 	ssrNode := map[string]interface{}{
 		"name":           "ssr",
@@ -56,7 +54,26 @@ func NewSSRClient(
 
 	p, _ := outbound.ParseProxy(ssrNode)
 
-	pr, err := NewProxyDialer(p, dns, dnsCache)
+	var ps C.Proxy
+	if forwardProxy != "" {
+		host, port, err := net.SplitHostPort(forwardProxy)
+		if err != nil {
+			return nil, err
+		}
+		socks5Node := make(map[string]interface{})
+		socks5Node["name"] = "socks"
+		socks5Node["type"] = "socks5"
+		socks5Node["server"] = host
+		socks5Node["port"] = port
+		socks5Node["udp"] = true
+		socks5Node["skip-cert-verify"] = true
+
+		ps, _ = outbound.ParseProxy(socks5Node)
+
+		p.SetDialer(ps)
+	}
+
+	pr, err := NewProxyDialer(p, dns)
 
 	if err != nil {
 		return nil, err

@@ -20,6 +20,7 @@ type Options struct {
 	Protocol       string `short:"O" description:"protocol" required:"false" default:"origin"`
 	ProtocolParam  string `long:"Op" description:"protocol param" required:"false"`
 	Dns            string `long:"dns" description:"custom dns" required:"false" default:"8.8.8.8:53"`
+	ForwardProxy   string `short:"f" description:"socks5 proxy address. example: 127.0.0.1:8080" required:"false"`
 }
 
 func main() {
@@ -45,6 +46,7 @@ func main() {
 		opts.Protocol,
 		opts.ProtocolParam,
 		opts.Dns,
+		opts.ForwardProxy,
 	)
 
 	if err != nil {

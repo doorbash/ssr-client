@@ -22,6 +22,7 @@ ssr-client [OPTIONS]
   -O=         protocol (default: origin)
       --Op=   protocol param
       --dns=  custom dns (default: 8.8.8.8:53)
+  -f=         socks5 proxy address. example: 127.0.0.1:8080
 ```
 
 ## Example
@@ -29,6 +30,9 @@ ssr-client [OPTIONS]
 ./ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -l 1080 -r 1081 -k 1234 -m aes-256-cfb --dns=8.8.4.4:53
 ```
 
+```
+./ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -l 1080 -r 1081 -k 1234 -m aes-256-cfb --dns=8.8.4.4:53 -f 127.0.0.1:8080
+```
 **Docker:**
 ```
 docker run --name ssr --restart always -d -p 1080:1080/tcp -p 1080:1080/udp -p 1081:1081/tcp doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -k 1234 -m aes-256-cfb --dns=8.8.4.4:53
