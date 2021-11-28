@@ -48,8 +48,7 @@ func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
 		return nil, err
 	}
 
-	conn, err := p.proxy.Dial(metadata)
-	return conn, err
+	return p.proxy.Dial(metadata)
 }
 
 func (p *ProxyDialer) DialUDP(network, addr string) (pc net.PacketConn, writeTo net.Addr, err error) {
@@ -102,7 +101,7 @@ func (p *ProxyDialer) Addr() string {
 	return ""
 }
 
-func NewProxyDialer(p C.Proxy, Dns string) (*ProxyDialer, error) {
+func NewProxyDialer(p C.Proxy) (*ProxyDialer, error) {
 	return &ProxyDialer{
 		proxy: p,
 	}, nil

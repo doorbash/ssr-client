@@ -33,7 +33,6 @@ func NewSSRClient(
 	obfsParam string,
 	protocol string,
 	protocolParam string,
-	dns string,
 	forwardProxy string,
 ) (*SSRClient, error) {
 	client := &SSRClient{}
@@ -73,7 +72,7 @@ func NewSSRClient(
 		p.SetDialer(ps)
 	}
 
-	pr, err := NewProxyDialer(p, dns)
+	pr, err := NewProxyDialer(p)
 
 	if err != nil {
 		return nil, err
