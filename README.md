@@ -35,6 +35,8 @@ ssr-client [OPTIONS]
 **Docker:**
 ```
 docker run --net host --name ssr1 --restart always -d doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -l 8080 -r 8081 -k 1234 -m aes-256-cfb
+```
 
+```
 docker run --net host --name ssr2 --restart always -d doorbash/ssr-client -s 5.6.7.8 -p 11800 -b 0.0.0.0 -l 9090 -r 9091 -k 1234 -m aes-256-cfb -f 127.0.0.1:8080
 ```
