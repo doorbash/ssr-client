@@ -1,6 +1,16 @@
 ## Build
 ```
-go build
+# windows系统中编译，目标为windows
+set GOOS=windows GO111MODULE=on GOARCH=amd64 CGO_ENABLED=0
+go build -a -buildmode=exe -trimpath -ldflags "-s -w" -o ssr-client.exe
+# linux系统中编译，目标为linux
+GOOS=linux GO111MODULE=on GOARCH=amd64 CGO_ENABLED=0 go build -a -buildmode=exe -trimpath -ldflags "-s -w" -o ssr-client
+# linux系统中编译，目标为arm64
+GOOS=linux GO111MODULE=on GOARCH=arm64 CGO_ENABLED=0 go build -a -buildmode=exe -trimpath -ldflags "-s -w" -o ssr-client
+# linux系统中编译，目标为ios
+GOOS=darwin GO111MODULE=on GOARCH=arm64 CGO_ENABLED=0 go build -a -buildmode=exe -trimpath -ldflags "-s -w" -o ssr-client
+# linux系统中编译，编译目标为Mac
+GOOS=darwin GO111MODULE=on GOARCH=amd64 CGO_ENABLED=0 go build -a -buildmode=exe -trimpath -ldflags "-s -w" -o ssr-client
 ```
 
 ## Usage:
