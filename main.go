@@ -19,7 +19,7 @@ type Options struct {
 	ObfsParam      string `long:"op" description:"obfs param" required:"false"`
 	Protocol       string `short:"O" description:"protocol" required:"false" default:"origin"`
 	ProtocolParam  string `long:"Op" description:"protocol param" required:"false"`
-	ForwardProxy   string `short:"f" description:"socks5 proxy address. example: 127.0.0.1:8080" required:"false"`
+	ForwardProxy   string `short:"f" long:"forward" description:"socks5 forward proxy address. example: 127.0.0.1:8080" required:"false"`
 }
 
 func main() {

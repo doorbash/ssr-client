@@ -10,18 +10,18 @@ ssr-client [OPTIONS]
 
 **Options:**
 ```
-  -s=         server address
-  -p=         server port (default: 8388)
-  -b=         local binding address (default: 127.0.0.1)
-  -l=         local socks port (default: 1080)
-  -r=         local http port (default: 1081)
-  -k=         password
-  -m=         encryption method (default: aes-256-cfb)
-  -o=         obfsplugin (default: http_simple)
-      --op=   obfs param
-  -O=         protocol (default: origin)
-      --Op=   protocol param
-  -f=         socks5 proxy address. example: 127.0.0.1:8080
+  -s=            server address
+  -p=            server port (default: 8388)
+  -b=            local binding address (default: 127.0.0.1)
+  -l=            local socks port (default: 1080)
+  -r=            local http port (default: 1081)
+  -k=            password
+  -m=            encryption method (default: aes-256-cfb)
+  -o=            obfsplugin (default: http_simple)
+      --op=      obfs param
+  -O=            protocol (default: origin)
+      --Op=      protocol param
+  -f, --forward= socks5 forward proxy address. example: 127.0.0.1:8080
 ```
 
 ## Example
@@ -34,7 +34,7 @@ ssr-client [OPTIONS]
 ```
 **Docker:**
 ```
-docker run --name ssr --restart always -p 1080:1080 -p 1080:1080/udp -p 1081:1081 -d doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -k 1234 -m aes-256-cfb
+docker run --name ssr --restart always -p 1080:1080 -p 1081:1081 -d doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -k 1234 -m aes-256-cfb
 ```
 
 ```
