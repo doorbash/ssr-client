@@ -22,7 +22,7 @@ jobs:
 
       - name: Build
         run: |
-          platforms=("linux/amd64" "darwin/amd64" "windows/amd64" "android/arm" "android/arm64")
+          platforms=("linux/amd64" "darwin/amd64" "windows/amd64")
           for x in "${platforms[@]}"; do
             os=${x%%/*}
             arch=${x##*/}
