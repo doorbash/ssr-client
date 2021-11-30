@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/jessevdk/go-flags"
 )
@@ -19,7 +20,9 @@ type Options struct {
 	ObfsParam      string `long:"op" description:"obfs param" required:"false"`
 	Protocol       string `short:"O" description:"protocol" required:"false" default:"origin"`
 	ProtocolParam  string `long:"Op" description:"protocol param" required:"false"`
+	SocketTimeout  int    `short:"t" description:"socket timeout in seconds" required:"false" default:"10"`
 	ForwardProxy   string `short:"f" long:"forward" description:"socks5 forward proxy address. example: 127.0.0.1:8080" required:"false"`
+	VerboseMode    bool   `short:"v" description:"verbose mode"`
 }
 
 func main() {
@@ -45,6 +48,8 @@ func main() {
 		opts.Protocol,
 		opts.ProtocolParam,
 		opts.ForwardProxy,
+		time.Duration(opts.SocketTimeout)*time.Second,
+		opts.VerboseMode,
 	)
 
 	if err != nil {

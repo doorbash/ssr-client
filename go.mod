@@ -3,7 +3,7 @@ module github.com/doorbash/ssr-client
 go 1.17
 
 require (
-	github.com/doorbash/bridge v0.1.9
+	github.com/doorbash/bridge v0.1.10
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/nadoo/glider v0.15.0
 )

@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"net"
+	"time"
 
 	"github.com/doorbash/bridge/adapter/outbound"
 	C "github.com/doorbash/bridge/constant"
+	"github.com/nadoo/glider/log"
 	"github.com/nadoo/glider/proxy"
 	"github.com/nadoo/glider/proxy/http"
 	"github.com/nadoo/glider/proxy/socks5"
@@ -34,8 +36,12 @@ func NewSSRClient(
 	protocol string,
 	protocolParam string,
 	forwardProxy string,
+	socketTimeout time.Duration,
+	verboseMode bool,
 ) (*SSRClient, error) {
-	client := &SSRClient{}
+	if verboseMode {
+		log.F = log.Debugf
+	}
 
 	ssrNode := map[string]interface{}{
 		"name":           "ssr",
@@ -72,7 +78,7 @@ func NewSSRClient(
 		p.SetDialer(ps)
 	}
 
-	pr, err := NewProxyDialer(p)
+	pr, err := NewProxyDialer(p, socketTimeout)
 
 	if err != nil {
 		return nil, err
@@ -81,6 +87,8 @@ func NewSSRClient(
 	ssrProxy := &SSRProxy{
 		dialer: pr,
 	}
+
+	client := &SSRClient{}
 
 	client.socks5server, _ = socks5.NewSocks5Server(fmt.Sprintf("socks://%s:%d", localAddr, localSocksPort), ssrProxy)
 

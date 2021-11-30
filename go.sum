@@ -11,8 +11,8 @@ github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/dgryski/go-camellia v0.0.0-20191119043421-69a8a13fb23d/go.mod h1:QX5ZVULjAfZJux/W62Y91HvCh9hyW6enAwcrrv/sLj0=
 github.com/dgryski/go-idea v0.0.0-20170306091226-d2fb45a411fb/go.mod h1:F7WkpqJj9t98ePxB/WJGQTIDeOVPuSJ3qdn6JUjg170=
 github.com/dgryski/go-rc2 v0.0.0-20150621095337-8a9021637152/go.mod h1:I9fhc/EvSg88cDxmfQ47v35Ssz9rlFunL/KY0A1JAYI=
-github.com/doorbash/bridge v0.1.9 h1:YklquIuYrJbfi5ejee/3J5W6SRgOAms56hnEp4YRmiM=
-github.com/doorbash/bridge v0.1.9/go.mod h1:iUYcPCTOBwRkDPNURyJw4qZ+E3MLbd8N/G51/LO6ivI=
+github.com/doorbash/bridge v0.1.10 h1:d8BXtUR58mFnAPZROYbr5xs7JsPIuP3N1ei9IsKxNQA=
+github.com/doorbash/bridge v0.1.10/go.mod h1:iUYcPCTOBwRkDPNURyJw4qZ+E3MLbd8N/G51/LO6ivI=
 github.com/doorbash/go-shadowsocks2 v1.0.2 h1:17rYg+rr3yGCxE9K3T7ouetDVaeStjor+iZIHqvd+cQ=
 github.com/doorbash/go-shadowsocks2 v1.0.2/go.mod h1:gh/7Gg0jxIGEQuWUoc6Ayt7dn0yJkG5CNaQ/MPGXhCE=
 github.com/ebfe/rc2 v0.0.0-20131011165748-24b9757f5521/go.mod h1:ucvhdsUCE3TH0LoLRb6ShHiJl8e39dGlx6A4g/ujlow=

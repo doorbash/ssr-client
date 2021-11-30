@@ -1,19 +1,21 @@
 package main
 
 import (
-	"log"
+	"context"
 	"net"
 	"strconv"
+	"time"
 
 	C "github.com/doorbash/bridge/constant"
 )
 
 type ProxyDialer struct {
-	proxy C.Proxy
+	proxy   C.Proxy
+	timeout time.Duration
 }
 
 func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
-	log.Printf("Dial: network: %s, addr: %s\n", network, addr)
+	// log.F("Dial: network: %s, addr: %s\n", network, addr)
 
 	host, port, err := net.SplitHostPort(addr)
 
@@ -48,11 +50,13 @@ func (p *ProxyDialer) Dial(network, addr string) (c net.Conn, err error) {
 		return nil, err
 	}
 
-	return p.proxy.Dial(metadata)
+	ctx, cancel := context.WithTimeout(context.Background(), p.timeout)
+	defer cancel()
+	return p.proxy.DialContext(ctx, metadata)
 }
 
 func (p *ProxyDialer) DialUDP(network, addr string) (pc net.PacketConn, writeTo net.Addr, err error) {
-	log.Printf("DialUDP: network: %s, addr: %s\n", network, addr)
+	// log.F("DialUDP: network: %s, addr: %s\n", network, addr)
 
 	host, port, err := net.SplitHostPort(addr)
 
@@ -98,11 +102,12 @@ func (p *ProxyDialer) DialUDP(network, addr string) (pc net.PacketConn, writeTo 
 }
 
 func (p *ProxyDialer) Addr() string {
-	return ""
+	return p.proxy.Addr()
 }
 
-func NewProxyDialer(p C.Proxy) (*ProxyDialer, error) {
+func NewProxyDialer(p C.Proxy, timeout time.Duration) (*ProxyDialer, error) {
 	return &ProxyDialer{
-		proxy: p,
+		proxy:   p,
+		timeout: timeout,
 	}, nil
 }

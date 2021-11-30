@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net"
 
 	"github.com/nadoo/glider/proxy"
@@ -22,10 +21,8 @@ func (p SSRProxy) DialUDP(network, addr string) (net.PacketConn, proxy.UDPDialer
 }
 
 func (p SSRProxy) NextDialer(dstAddr string) proxy.Dialer {
-	log.Printf("NextDialer: dstAddr: %s\n", dstAddr)
 	return p.dialer
 }
 
 func (p SSRProxy) Record(dialer proxy.Dialer, success bool) {
-	// log.Printf("Record: success: %v\n", success)
 }
