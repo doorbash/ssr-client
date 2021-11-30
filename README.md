@@ -21,7 +21,9 @@ ssr-client [OPTIONS]
       --op=      obfs param
   -O=            protocol (default: origin)
       --Op=      protocol param
+  -t=            socket timeout in seconds (default: 10)
   -f, --forward= socks5 forward proxy address. example: 127.0.0.1:8080
+  -v             verbose mode
 ```
 
 ## Example
