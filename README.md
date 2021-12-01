@@ -35,7 +35,7 @@ ssr-client [OPTIONS]
 ```
 **Docker:**
 ```
-docker run --name ssr --restart always -p 1080:1080 -p 1081:1081 -d doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -k 1234 -m aes-256-cfb
+docker run --name ssr --restart always -p 1080:1080 -d doorbash/ssr-client -s 1.2.3.4 -p 11800 -b 0.0.0.0 -k 1234 -m aes-256-cfb
 ```
 
 ```
