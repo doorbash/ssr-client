@@ -9,26 +9,22 @@ import (
 	C "github.com/doorbash/bridge/constant"
 	"github.com/nadoo/glider/log"
 	"github.com/nadoo/glider/proxy"
-	"github.com/nadoo/glider/proxy/http"
-	"github.com/nadoo/glider/proxy/socks5"
+	"github.com/nadoo/glider/proxy/mixed"
 )
 
 type SSRClient struct {
-	httpServer   proxy.Server
-	socks5server proxy.Server
+	mixedServer proxy.Server
 }
 
 func (s *SSRClient) ListenAndServe() {
-	go s.httpServer.ListenAndServe()
-	s.socks5server.ListenAndServe()
+	s.mixedServer.ListenAndServe()
 }
 
 func NewSSRClient(
 	serverAddr string,
 	serverPort int,
 	localAddr string,
-	localSocksPort int,
-	localHttpPort int,
+	localPort int,
 	password string,
 	method string,
 	obfs string,
@@ -84,15 +80,11 @@ func NewSSRClient(
 		return nil, err
 	}
 
-	ssrProxy := &SSRProxy{
-		dialer: pr,
-	}
-
 	client := &SSRClient{}
 
-	client.socks5server, _ = socks5.NewSocks5Server(fmt.Sprintf("socks://%s:%d", localAddr, localSocksPort), ssrProxy)
+	client.mixedServer, err = mixed.NewMixedServer(fmt.Sprintf("mixed://%s:%d", localAddr, localPort), &SSRProxy{
+		dialer: pr,
+	})
 
-	client.httpServer, _ = http.NewHTTPServer(fmt.Sprintf("http://%s:%d", localAddr, localHttpPort), ssrProxy)
-
-	return client, nil
+	return client, err
 }
