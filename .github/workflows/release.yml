@@ -35,8 +35,9 @@ jobs:
           done
           cd dist
           find ./* -maxdepth 0 -executable -type f -print0 | xargs -0 -I {} echo "sha1sum {} | awk '{print \$1;}' > {}.sha1" | sh
-      - name: Upload build-artifacts
-        uses: actions/upload-artifact@v3
+      - name: GH Release
+        uses: softprops/action-gh-release@v0.1.14
         with:
-          name: my-artifact
-          path: dist/
+          files: |
+            dist/*
+
