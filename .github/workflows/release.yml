@@ -32,6 +32,8 @@ jobs:
             fi
             GOOS=$os GOARCH=$arch CGO_ENABLED=0 go build -o dist/$filename -trimpath -ldflags "-s -w"
           done
+          cd dist
+          find ./* -maxdepth 0 -executable -type f -print0 | xargs -0 -I {} echo "sha1sum {} | awk '{print \$1;}' > {}.sha1" | sh
       - name: Upload build-artifacts
         uses: skx/github-action-publish-binaries@master
         env:
