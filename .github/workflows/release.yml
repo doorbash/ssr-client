@@ -34,7 +34,7 @@ jobs:
             GOOS=$os GOARCH=$arch CGO_ENABLED=0 go build -o dist/$filename -trimpath -ldflags "-s -w"
           done
           cd dist
-          find ./* -maxdepth 0 -executable -type f -print0 | xargs -0 -I {} echo "sha1sum {} | awk '{print \$1;}' > {}.sha1" | sh
+          find ./* -maxdepth 0 -executable -type f -print0 | xargs -0 -I {} echo "sha256sum {} | awk '{print \$1;}' | tr -d '\n' > {}.sha256" | sh
       - name: GH Release
         uses: softprops/action-gh-release@v0.1.14
         with:
