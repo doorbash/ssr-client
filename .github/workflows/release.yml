@@ -29,7 +29,8 @@ jobs:
             arch=${x##*/}
             filename=${{ github.event.repository.name }}-$os-$arch
             if [ "$os" == "windows" ]; then
-              filename+=".exe"
+              GOOS=$os GOARCH=$arch CGO_ENABLED=0 go build -o dist/$filename-no-console.exe -trimpath -ldflags "-s -w -H=windowsgui"
+              filename+=".exe" 
             fi
             GOOS=$os GOARCH=$arch CGO_ENABLED=0 go build -o dist/$filename -trimpath -ldflags "-s -w"
           done
